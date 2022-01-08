@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
@@ -25,16 +27,17 @@ class LogInController extends BaseController
         $bbdd = new UserController();
         $bbddSelect = $bbdd->getUserByMail($email);
         $responseCode = $bbddSelect[1];
-        $user = $bbddSelect[0];
+        $response = $bbddSelect[0];
 
-        if ($responseCode !== 500) {
-            if (count($user) != 0) {
-                $user = $user[0];
+        try {
+            if ($responseCode !== 500) {
+                if (count($response) != 0) {
+                    $response = $response[0];
 
-                if (Hash::check($password, $user->password)) {
+
                     // The passwords match...
                     $secret = DB::table('oauth_clients')
-                        ->where('user_id', $user->id)->value('secret');
+                        ->where('id', 2)->value('secret');
 
                     Log::debug($secret);
 
@@ -47,24 +50,20 @@ class LogInController extends BaseController
                         'scope' => '',
                     ]);
 
-
-                    Log::debug($response);
-                    $responseCode = 200;
+                    $responseBody = $response->json();
+                    $responseCode = $response->status();
                 } else {
-                    $responseCode = 204;
+                    $responseCode = 400;
                     // If we put response code 204, the message will not appear
-                    $user = array('message' => 'Incorrect mail/password combination');
+                    $responseBody = array('message' => 'No user found with email given');
                 }
-            } else {
-                $responseCode = 204;
-                // If we put response code 204, the message will not appear
-                $user = array('message' => 'No user with email given');
             }
+        } catch (Exception $e) {
+            $responseCode = 500;
+            // If we put response code 204, the message will not appear
+            $responseBody = array('error' => $e);
         }
-
-
-
-        return response()->json($user, $responseCode);
+        return response()->json($responseBody, $responseCode);
     }
 
     //Funció que serveix per formatejar les dades a un JSON
