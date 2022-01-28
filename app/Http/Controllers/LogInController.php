@@ -39,9 +39,7 @@ class LogInController extends BaseController
                     $secret = DB::table('oauth_clients')
                         ->where('id', 2)->value('secret');
 
-                    Log::debug($secret);
-
-                    $response = Http::asForm()->post('http://localhost:8000/oauth/token', [
+                    $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
                         'grant_type' => 'password',
                         'client_id' => 2,
                         'client_secret' => $secret,
