@@ -60,6 +60,7 @@ class LogInController extends BaseController
             $responseCode = 500;
             // If we put response code 204, the message will not appear
             $responseBody = array('error' => $e);
+            Log::debug($e);
         }
         return response()->json($responseBody, $responseCode);
     }
