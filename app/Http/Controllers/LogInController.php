@@ -29,17 +29,19 @@ class LogInController extends BaseController
         $responseCode = $bbddSelect[1];
         $response = $bbddSelect[0];
 
+        Log::debug($responseCode);
+        Log::debug($response);
         try {
             if ($responseCode !== 500) {
                 if (count($response) != 0) {
                     $response = $response[0];
 
-
                     // The passwords match...
                     $secret = DB::table('oauth_clients')
                         ->where('id', 2)->value('secret');
 
-                    $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
+                    Log::debug($secret);
+                    $response = Http::asForm()->post('https://topspeedstarsapi.herokuapp.com/oauth/token', [
                         'grant_type' => 'password',
                         'client_id' => 2,
                         'client_secret' => $secret,
@@ -48,6 +50,8 @@ class LogInController extends BaseController
                         'scope' => '',
                     ]);
 
+                    Log::debug($response);
+                    Log::debug($response->json());
                     $responseBody = $response->json();
                     $responseCode = $response->status();
                 } else {
