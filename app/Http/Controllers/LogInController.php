@@ -36,7 +36,6 @@ class LogInController extends BaseController
                 if (count($response) != 0) {
                     $response = $response[0];
 
-                    // The passwords match...
                     $secret = DB::table('oauth_clients')
                         ->where('id', 2)->value('secret');
 
@@ -51,7 +50,7 @@ class LogInController extends BaseController
                     ]);
 
                     Log::debug($response);
-                    Log::debug($response->json());
+                    //Log::debug($response->json());
                     $responseBody = $response->json();
                     $responseCode = $response->status();
                 } else {
