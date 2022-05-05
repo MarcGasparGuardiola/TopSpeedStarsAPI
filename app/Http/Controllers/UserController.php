@@ -11,21 +11,39 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends BaseController
 {
-    public function getUserByMailAndPassword($mail, $password)
+    public function getUserByMailAndPassword(Request $request)
     {
-        try {
 
+        $statusCode = 500;
+        $msg = LogInController::formatData(array('error' => 'Something went wrong'));
+
+        $mail = $request->input('email');
+        //$password = Hash::make($request->input('password'));
+
+        Log::debug($mail);
+        //Log::debug($password);
+
+        try {
             $user = User::where('email', 'like', "$mail")
-                ->where('password', 'like', "$password")
                 ->get();
 
-            return [$user, 200];
+                $statusCode = 200;
+            if (count($user) === 0) {
+                $msg = array('body' => 'No user found');
+            } else {
+                $msg = array('body' => $user);
+            }
+               
         } catch (Exception $e) {
-            return [$e, 500];
+            $statusCode = 500;
+           $msg = $e;
         }
+
+        return response()->json($msg, $statusCode);
     }
 
     public function getUserByMail($mail)

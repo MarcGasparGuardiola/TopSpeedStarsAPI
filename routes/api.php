@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [LogInController::class, 'logIn']);
 Route::post('/user', [UserController::class, 'createUser']);
 Route::get('/users', [UserController::class, 'getUsers']);
+Route::post('/userInfo', [UserController::class, 'getUserByMailAndPassword']);
 
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);
@@ -36,6 +37,7 @@ Route::post('/tokens/create', function (Request $request) {
 Route::get('/getRankingPosition', [RankingController::class, 'getUserRankingPosition']);
 Route::post('/setRankingTime', [RankingController::class, 'setRankingTime']);
 Route::get('/getUserRankings', [RankingController::class, 'getAllUserRanking']);
+
 
 
 Route::get('/temas', [TemaController::class, 'index']);
