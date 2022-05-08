@@ -48,7 +48,7 @@ Route::delete('/temas/{id}', [TemaController::class, 'destroy']);
 Route::put('/temas/{id}', [TemaController::class, 'update']);
 
 Route::post('/respuestas', [RespuestaController::class, 'store']);
-Route::get('/respuestas', [RespuestaController::class, 'getRespuestas']);
+Route::get('/respuestas', [RespuestaController::class, 'showAllResponsesOfTema']);
 Route::get('/respuestas/{id}', [RespuestaController::class, 'showResponse']);
 Route::delete('/respuestas/{id}', [RespuestaController::class, 'destroy']);
 Route::put('/respuestas/{id}', [RespuestaController::class, 'update']);

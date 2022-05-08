@@ -80,7 +80,11 @@ class RespuestaController extends Controller
      */
     public function showAllResponsesOfTema(Request $request)
     {
-        $temaId = $request->input('temaId');
+        $temaId = $request->query('temaId');
+
+        if ($request->query('temaId') === null) {
+            return $this->index();
+        }
 
         try {
             $msg = Respuesta::where('tema_id', $temaId)->get();
